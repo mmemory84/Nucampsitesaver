@@ -24,7 +24,7 @@ const commentSchema = new Schema({
     timestamps: true
 });
 
-const campsiteSchema = new Schema({
+const partnerSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -56,6 +56,6 @@ const campsiteSchema = new Schema({
     timestamps: true
 });
 
-const Campsite = mongoose.model('Campsite', campsiteSchema);
+const partner = mongoose.model('partner', partnerSchema);
 
-module.exports = Campsite;
+module.exports = partner;
