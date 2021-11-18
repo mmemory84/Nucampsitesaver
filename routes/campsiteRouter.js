@@ -1,34 +1,34 @@
 const express = require('express');
-const partner = require('../models/partner');
+const campsite = require('../models/campsite');
 
-const partnerRouter = express.Router();
+const campsiteRouter = express.Router();
 
-partnerRouter.route('/')
+campsiteRouter.route('/')
 .get((req, res, next) => {
-    partner.find()
-    .then(partners => {
+    campsite.find()
+    .then(campsite => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(partners);
+        res.json(campsite);
     })
     .catch(err => next(err));
 })
 .post((req, res, next) => {
-    partner.create(req.body)
-    .then(partner => {
-        console.log('partner Created ', partner);
+    campsite.create(req.body)
+    .then(campsite => {
+        console.log('campsite Created ', campsite);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(partner);
+        res.json(campsite);
     })
     .catch(err => next(err));
 })
 .put((req, res) => {
     res.statusCode = 403;
-    res.end('PUT operation not supported on /partners');
+    res.end('PUT operation not supported on /campsite');
 })
 .delete((req, res, next) => {
-    partner.deleteMany()
+    campsite.deleteMany()
     .then(response => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -37,33 +37,33 @@ partnerRouter.route('/')
     .catch(err => next(err));
 });
 
-partnerRouter.route('/:partnerId')
+campsiteRouter.route('/:campsiteId')
 .get((req, res, next) => {
-    partner.findById(req.params.partnerId)
-    .then(partner => {
+    campsite.findById(req.params.campsiteId)
+    .then(campsite => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(partner);
+        res.json(campsite);
     })
     .catch(err => next(err));
 })
 .post((req, res) => {
     res.statusCode = 403;
-    res.end(`POST operation not supported on /partners/${req.params.partnerId}`);
+    res.end(`POST operation not supported on /s/${req.params.campsiteId}`);
 })
 .put((req, res, next) => {
-    partner.findByIdAndUpdate(req.params.partnerId, {
+    campsite.findByIdAndUpdate(req.params.campsiteId, {
         $set: req.body
     }, { new: true })
-    .then(partner => {
+    .then(campsite => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(partner);
+        res.json(campsite);
     })
     .catch(err => next(err));
 })
 .delete((req, res, next) => {
-    partner.findByIdAndDelete(req.params.partnerId)
+    campsite.findByIdAndDelete(req.params.campsiteId)
     .then(response => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -72,16 +72,16 @@ partnerRouter.route('/:partnerId')
     .catch(err => next(err));
 });
 
-partnerRouter.route('/:partnerId/comments')
+campsiteRouter.route('/:campsiteId/comments')
 .get((req, res, next) => {
-    partner.findById(req.params.partnerId)
-    .then(partner => {
-        if (partner) {
+    Campsite.findById(req.params.campsiteId)
+    .then(campsite => {
+        if (campsite) {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
-            res.json(partner.comments);
+            res.json(campsite.comments);
         } else {
-            err = new Error(`partner ${req.params.partnerId} not found`);
+            err = new Error(`Campsite ${req.params.campsiteId} not found`);
             err.status = 404;
             return next(err);
         }
@@ -89,19 +89,19 @@ partnerRouter.route('/:partnerId/comments')
     .catch(err => next(err));
 })
 .post((req, res, next) => {
-    partner.findById(req.params.partnerId)
-    .then(partner => {
-        if (partner) {
-            partner.comments.push(req.body);
-            partner.save()
-            .then(partner => {
+    Campsite.findById(req.params.campsiteId)
+    .then(campsite => {
+        if (campsite) {
+            campsite.comments.push(req.body);
+            campsite.save()
+            .then(campsite => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(partner);
+                res.json(campsite);
             })
             .catch(err => next(err));
         } else {
-            err = new Error(`partner ${req.params.partnerId} not found`);
+            err = new Error(`Campsite ${req.params.campsiteId} not found`);
             err.status = 404;
             return next(err);
         }
@@ -110,24 +110,24 @@ partnerRouter.route('/:partnerId/comments')
 })
 .put((req, res) => {
     res.statusCode = 403;
-    res.end(`PUT operation not supported on /partners/${req.params.partnerId}/comments`);
+    res.end(`PUT operation not supported on /campsites/${req.params.campsiteId}/comments`);
 })
 .delete((req, res, next) => {
-    partner.findById(req.params.partnerId)
-    .then(partner => {
-        if (partner) {
-            for (let i = (partner.comments.length-1); i >= 0; i--) {
-                partner.comments.id(partner.comments[i]._id).remove();
+    Campsite.findById(req.params.campsiteId)
+    .then(campsite => {
+        if (campsite) {
+            for (let i = (campsite.comments.length-1); i >= 0; i--) {
+                campsite.comments.id(campsite.comments[i]._id).remove();
             }
-            partner.save()
-            .then(partner => {
+            campsite.save()
+            .then(campsite => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(partner);
+                res.json(campsite);
             })
             .catch(err => next(err));
         } else {
-            err = new Error(`partner ${req.params.partnerId} not found`);
+            err = new Error(`Campsite ${req.params.campsiteId} not found`);
             err.status = 404;
             return next(err);
         }
@@ -135,16 +135,16 @@ partnerRouter.route('/:partnerId/comments')
     .catch(err => next(err));
 });
 
-partnerRouter.route('/:partnerId/comments/:commentId')
+campsiteRouter.route('/:campsiteId/comments/:commentId')
 .get((req, res, next) => {
-    partner.findById(req.params.partnerId)
-    .then(partner => {
-        if (partner && partner.comments.id(req.params.commentId)) {
+    Campsite.findById(req.params.campsiteId)
+    .then(campsite => {
+        if (campsite && campsite.comments.id(req.params.commentId)) {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
-            res.json(partner.comments.id(req.params.commentId));
-        } else if (!partner) {
-            err = new Error(`partner ${req.params.partnerId} not found`);
+            res.json(campsite.comments.id(req.params.commentId));
+        } else if (!campsite) {
+            err = new Error(`Campsite ${req.params.campsiteId} not found`);
             err.status = 404;
             return next(err);
         } else {
@@ -157,27 +157,27 @@ partnerRouter.route('/:partnerId/comments/:commentId')
 })
 .post((req, res) => {
     res.statusCode = 403;
-    res.end(`POST operation not supported on /partners/${req.params.partnerId}/comments/${req.params.commentId}`);
+    res.end(`POST operation not supported on /campsites/${req.params.campsiteId}/comments/${req.params.commentId}`);
 })
 .put((req, res, next) => {
-    partner.findById(req.params.partnerId)
-    .then(partner => {
-        if (partner && partner.comments.id(req.params.commentId)) {
+    Campsite.findById(req.params.campsiteId)
+    .then(campsite => {
+        if (campsite && campsite.comments.id(req.params.commentId)) {
             if (req.body.rating) {
-                partner.comments.id(req.params.commentId).rating = req.body.rating;
+                campsite.comments.id(req.params.commentId).rating = req.body.rating;
             }
             if (req.body.text) {
-                partner.comments.id(req.params.commentId).text = req.body.text;
+                campsite.comments.id(req.params.commentId).text = req.body.text;
             }
-            partner.save()
-            .then(partner => {
+            campsite.save()
+            .then(campsite => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(partner);
+                res.json(campsite);
             })
             .catch(err => next(err));
-        } else if (!partner) {
-            err = new Error(`partner ${req.params.partnerId} not found`);
+        } else if (!campsite) {
+            err = new Error(`Campsite ${req.params.campsiteId} not found`);
             err.status = 404;
             return next(err);
         } else {
@@ -189,19 +189,19 @@ partnerRouter.route('/:partnerId/comments/:commentId')
     .catch(err => next(err));
 })
 .delete((req, res, next) => {
-    partner.findById(req.params.partnerId)
-    .then(partner => {
-        if (partner && partner.comments.id(req.params.commentId)) {
-            partner.comments.id(req.params.commentId).remove();
-            partner.save()
-            .then(partner => {
+    Campsite.findById(req.params.campsiteId)
+    .then(campsite => {
+        if (campsite && campsite.comments.id(req.params.commentId)) {
+            campsite.comments.id(req.params.commentId).remove();
+            campsite.save()
+            .then(campsite => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(partner);
+                res.json(campsite);
             })
             .catch(err => next(err));
-        } else if (!partner) {
-            err = new Error(`partner ${req.params.partnerId} not found`);
+        } else if (!campsite) {
+            err = new Error(`Campsite ${req.params.campsiteId} not found`);
             err.status = 404;
             return next(err);
         } else {
@@ -213,5 +213,5 @@ partnerRouter.route('/:partnerId/comments/:commentId')
     .catch(err => next(err));
 });
 
-module.exports = partnerRouter;
+module.exports = campsiteRouter;
 
